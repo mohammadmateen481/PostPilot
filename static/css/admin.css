@@ -1,0 +1,345 @@
+/* Admin Specific Styles */
+
+/* Admin Layout */
+.admin-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    min-height: calc(100vh - 200px);
+}
+
+/* Admin Sidebar */
+.admin-sidebar {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.admin-menu {
+    list-style: none;
+}
+
+.admin-menu li {
+    margin-bottom: 0.5rem;
+}
+
+.admin-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem;
+    color: var(--gray-dark);
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.admin-menu a:hover {
+    background-color: var(--gray-light);
+    color: var(--primary-color);
+}
+
+.admin-menu a.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.admin-menu a i {
+    width: 20px;
+    text-align: center;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: var(--danger);
+    color: white;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    margin-left: auto;
+}
+
+/* Admin Content */
+.admin-content {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+}
+
+/* Stats Overview */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card-admin {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card-admin:nth-child(2) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-card-admin:nth-child(3) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-card-admin:nth-child(4) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.stat-card-admin::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(30%, -30%);
+}
+
+.stat-value-admin {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.stat-label-admin {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.stat-icon {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    opacity: 0.3;
+}
+
+/* Data Tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    background: var(--gray-light);
+    font-weight: 600;
+    color: var(--gray-dark);
+}
+
+.data-table tr:hover {
+    background: var(--gray-light);
+}
+
+/* User Status */
+.user-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.user-status.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.user-status.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.user-status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* Comment Moderation */
+.comment-moderation {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    margin: 1rem 0;
+}
+
+.comment-header-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--gray-light);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.comment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.comment-content-admin {
+    padding: 1rem;
+}
+
+/* Chart Containers */
+.chart-wrapper {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.chart-title {
+    margin-bottom: 1.5rem;
+    color: var(--gray-dark);
+}
+
+/* System Info */
+.system-info {
+    background: var(--gray-light);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: var(--gray-dark);
+}
+
+.info-value {
+    color: var(--primary-color);
+    font-family: monospace;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    background: var(--gray-light);
+    color: var(--gray-dark);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-icon:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-icon.approve:hover {
+    background: var(--success);
+}
+
+.btn-icon.reject:hover {
+    background: var(--danger);
+}
+
+.btn-icon.edit:hover {
+    background: var(--info);
+}
+
+/* Bulk Actions */
+.bulk-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--gray-light);
+    border-radius: var(--radius);
+    margin: 1rem 0;
+}
+
+/* Search and Filter */
+.admin-search {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.admin-search input {
+    flex: 1;
+}
+
+/* Responsive Admin */
+@media (max-width: 992px) {
+    .admin-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-sidebar {
+        position: static;
+    }
+    
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

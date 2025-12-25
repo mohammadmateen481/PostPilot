@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - BlogSpace{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-container">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <h2>Admin Panel</h2>
+            <ul class="admin-menu">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}" class="active">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_comments') }}">
+                        <i class="fas fa-comments"></i> Comments
+                        {% if stats.pending_comments > 0 %}
+                        <span class="badge">{{ stats.pending_comments }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_users') }}">
+                        <i class="fas fa-users"></i> Users
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-newspaper"></i> Posts
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-tags"></i> Categories
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-bell"></i> Notifications
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="admin-info">
+                <h3>Quick Stats</h3>
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <div class="stat-value">{{ stats.total_users }}</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="stat-value">{{ stats.total_posts }}</div>
+                        <div class="stat-label">Total Posts</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="stat-value">{{ stats.total_comments }}</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <h1>Admin Dashboard</h1>
+            <p class="admin-subtitle">Welcome back, {{ current_user.username }}. Here's what's happening.</p>
+
+            <!-- Stats Overview -->
+            <div class="stats-overview">
+                <div class="stat-card-admin">
+                    <div class="stat-label-admin">Total Users</div>
+                    <div class="stat-value-admin">{{ stats.total_users }}</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-card-admin">
+                    <div class="stat-label-admin">Total Posts</div>
+                    <div class="stat-value-admin">{{ stats.total_posts }}</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                </div>
+                <div class="stat-card-admin">
+                    <div class="stat-label-admin">Total Comments</div>
+                    <div class="stat-value-admin">{{ stats.total_comments }}</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                </div>
+                <div class="stat-card-admin">
+                    <div class="stat-label-admin">Pending Comments</div>
+                    <div class="stat-value-admin">{{ stats.pending_comments }}</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <h2>Recent Activity</h2>
+                
+                <div class="activity-tabs">
+                    <button class="activity-tab active" data-target="posts">Recent Posts</button>
+                    <button class="activity-tab" data-target="users">New Users</button>
+                    <button class="activity-tab" data-target="comments">Recent Comments</button>
+                </div>
+
+                <!-- Recent Posts -->
+                <div class="activity-content active" id="posts-content">
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for post in recent_posts %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('view_post', slug=post.slug) }}">{{ post.title }}</a>
+                                    </td>
+                                    <td>{{ post.author.username }}</td>
+                                    <td>
+                                        {% if post.is_published %}
+                                        <span class="user-status active">Published</span>
+                                        {% else %}
+                                        <span class="user-status inactive">Draft</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ post.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="{{ url_for('edit_post', slug=post.slug) }}" class="btn-icon edit" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ url_for('delete_post', slug=post.slug) }}" method="POST" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn-icon reject" title="Delete" onclick="return confirm('Are you sure?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Users -->
+                <div class="activity-content" id="users-content">
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_users %}
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <img src="{{ url_for('static', filename='uploads/' + user.profile_image) if user.profile_image else url_for('static', filename='images/default-avatar.png') }}" 
+                                                 alt="{{ user.username }}" class="user-avatar-sm">
+                                            {{ user.username }}
+                                        </div>
+                                    </td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        {% if user.role == 'admin' %}
+                                        <span class="user-status active">Admin</span>
+                                        {% else %}
+                                        <span class="user-status">User</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        {% if user.is_active %}
+                                        <span class="user-status active">Active</span>
+                                        {% else %}
+                                        <span class="user-status inactive">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <form action="{{ url_for('toggle_user_status', user_id=user.id) }}" method="POST" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn-icon" title="{{ 'Deactivate' if user.is_active else 'Activate' }}">
+                                                    <i class="fas fa-{{ 'user-slash' if user.is_active else 'user-check' }}"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Info -->
+            <div class="system-info">
+                <h3>System Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Platform Version</span>
+                        <span class="info-value">1.0.0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Database</span>
+                        <span class="info-value">SQLite</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Server Time</span>
+                        <span class="info-value">{{ now().strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Uptime</span>
+                        <span class="info-value">24 days</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Tab functionality
+document.querySelectorAll('.activity-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.activity-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.activity-content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked tab and corresponding content
+        this.classList.add('active');
+        const targetId = this.dataset.target + '-content';
+        document.getElementById(targetId).classList.add('active');
+    });
+});
+
+// Real-time updates for stats
+function updateStats() {
+    fetch('/api/analytics')
+        .then(response => response.json())
+        .then(data => {
+            // Update stats cards if needed
+            console.log('Stats updated:', data);
+        })
+        .catch(error => console.error('Error updating stats:', error));
+}
+
+// Update stats every 60 seconds
+setInterval(updateStats, 60000);
+
+// Quick actions
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('quick-action')) {
+        e.preventDefault();
+        const action = e.target.dataset.action;
+        
+        switch(action) {
+            case 'clear_cache':
+                if (confirm('Clear all cache?')) {
+                    fetch('/admin/clear-cache', { method: 'POST' })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Cache cleared successfully!');
+                            }
+                        });
+                }
+                break;
+            case 'backup_db':
+                if (confirm('Create database backup?')) {
+                    fetch('/admin/backup-database', { method: 'POST' })
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'backup.sqlite';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                        });
+                }
+                break;
+        }
+    }
+});
+
+// Search functionality for admin tables
+const searchInput = document.querySelector('.admin-search input');
+if (searchInput) {
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const table = this.closest('.data-table-container').querySelector('tbody');
+        
+        Array.from(table.rows).forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    });
+}
+
+// Export data
+document.querySelector('.export-btn')?.addEventListener('click', function() {
+    const format = this.dataset.format || 'csv';
+    const table = document.querySelector('.data-table');
+    const rows = Array.from(table.querySelectorAll('tr'));
+    
+    let csvContent = '';
+    rows.forEach(row => {
+        const cells = Array.from(row.querySelectorAll('th, td'));
+        const rowContent = cells.map(cell => `"${cell.textContent.replace(/"/g, '""')}"`).join(',');
+        csvContent += rowContent + '\n';
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'export.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
+</script>
+{% endblock %}

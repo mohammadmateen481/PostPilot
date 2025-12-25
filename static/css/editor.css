@@ -1,0 +1,245 @@
+/* Rich Text Editor Styles */
+
+.editor-container-full {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+}
+
+.editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 12px;
+    background: var(--gray-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius) var(--radius) 0 0;
+    border-bottom: none;
+}
+
+.editor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+.editor-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.toolbar-divider {
+    width: 1px;
+    background: var(--border-color);
+    margin: 0 4px;
+}
+
+.editor-content {
+    min-height: 400px;
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 1.5rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.8;
+}
+
+.editor-content:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(26, 137, 23, 0.1);
+}
+
+.editor-content h2 {
+    font-size: 2rem;
+    margin: 2rem 0 1rem;
+}
+
+.editor-content h3 {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 1rem;
+}
+
+.editor-content p {
+    margin-bottom: 1.5rem;
+}
+
+.editor-content ul,
+.editor-content ol {
+    margin: 1rem 0 1rem 2rem;
+}
+
+.editor-content blockquote {
+    border-left: 4px solid var(--primary-color);
+    margin: 1.5rem 0;
+    padding-left: 1.5rem;
+    font-style: italic;
+    color: var(--gray-dark);
+}
+
+.editor-content a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.editor-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    margin: 1rem 0;
+}
+
+.editor-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.editor-content table th,
+.editor-content table td {
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.editor-content table th {
+    background: var(--gray-light);
+    font-weight: 600;
+}
+
+.editor-content code {
+    background: var(--gray-light);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.editor-content pre {
+    background: var(--gray-light);
+    padding: 1rem;
+    border-radius: var(--radius);
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.editor-content pre code {
+    background: none;
+    padding: 0;
+}
+
+.editor-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray);
+}
+
+/* Editor toolbar states */
+.editor-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Image upload preview */
+.image-upload-container {
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+.image-preview {
+    position: relative;
+    display: inline-block;
+    margin: 1rem;
+}
+
+.image-preview img {
+    max-width: 300px;
+    max-height: 200px;
+    border-radius: var(--radius);
+}
+
+.remove-image {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Form layout */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+.current-image {
+    margin-top: 1rem;
+}
+
+.current-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Responsive editor */
+@media (max-width: 768px) {
+    .editor-container-full {
+        padding: 1rem;
+        margin: 1rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .editor-toolbar {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

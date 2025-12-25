@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - BlogSpace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="error-container">
+        <div class="error-content">
+            <h1>500</h1>
+            <h2>Internal Server Error</h2>
+            <p>Something went wrong on our end. We're working to fix it.</p>
+            <p class="error-details">
+                Try refreshing the page or come back later. If the problem persists, 
+                please contact our support team.
+            </p>
+            <div class="error-actions">
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Go Home
+                </a>
+                <button onclick="location.reload()" class="btn btn-outline">
+                    <i class="fas fa-redo"></i> Refresh Page
+                </button>
+            </div>
+            <div class="error-contact">
+                <p>Need help? <a href="mailto:support@blogspace.com">Contact Support</a></p>
+            </div>
+        </div>
+        <div class="error-image">
+            <img src="{{ url_for('static', filename='images/500.svg') }}" alt="500 Error">
+        </div>
+    </div>
+</div>
+{% endblock %}

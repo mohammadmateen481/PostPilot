@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - {{ current_user.username }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-cover">
+                <div class="cover-image"></div>
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <img src="{{ url_for('static', filename='uploads/' + current_user.profile_image) if current_user.profile_image else url_for('static', filename='images/default-avatar.png') }}" 
+                             alt="{{ current_user.username }}" id="avatar-preview">
+                        <label for="profile_image" class="avatar-upload">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                    </div>
+                    <div class="profile-details">
+                        <h1>{{ current_user.username }}</h1>
+                        <p class="profile-bio">{{ current_user.bio or "No bio yet." }}</p>
+                        <p class="profile-email">{{ current_user.email }}</p>
+                        <p class="profile-joined">Joined {{ current_user.created_at.strftime('%B %Y') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <!-- Stats -->
+            <div class="profile-stats">
+                <div class="stat">
+                    <div class="stat-number">{{ current_user.posts|length }}</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">
+                        {{ current_user.posts|selectattr('is_published')|list|length }}
+                    </div>
+                    <div class="stat-label">Published</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">
+                        {% set total_views = current_user.posts|sum(attribute='views') %}
+                        {{ total_views }}
+                    </div>
+                    <div class="stat-label">Views</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">
+                        {% set total_likes = current_user.posts|sum(attribute='likes') %}
+                        {{ total_likes }}
+                    </div>
+                    <div class="stat-label">Likes</div>
+                </div>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div class="profile-form-container">
+                <h2>Edit Profile</h2>
+                
+                <form method="POST" action="{{ url_for('profile') }}" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control") }}
+                            {% for error in form.username.errors %}
+                            <span class="form-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.profile_image.label(class="form-label") }}
+                            {{ form.profile_image(class="form-control-file") }}
+                            <div class="form-text">Recommended: Square image, 400x400 pixels</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.bio.label(class="form-label") }}
+                        {{ form.bio(class="form-control", rows=4, placeholder="Tell us about yourself...") }}
+                        <div class="form-text">Max 500 characters</div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Change Password</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                {{ form.password.label(class="form-label") }}
+                                {{ form.password(class="form-control", placeholder="New password") }}
+                                {% for error in form.password.errors %}
+                                <span class="form-error">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="form-group">
+                                {{ form.confirm_password.label(class="form-label") }}
+                                {{ form.confirm_password(class="form-control", placeholder="Confirm new password") }}
+                                {% for error in form.confirm_password.errors %}
+                                <span class="form-error">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list">
+                    {% for post in current_user.posts|sort(attribute='updated_at', reverse=True)|slice(5) %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>
+                                <a href="{{ url_for('view_post', slug=post.slug) }}">{{ post.title }}</a>
+                            </h4>
+                            <p class="activity-meta">
+                                {% if post.is_published %}
+                                Published {{ post.published_at.strftime('%b %d') }}
+                                {% else %}
+                                Last edited {{ post.updated_at.strftime('%b %d') }}
+                                {% endif %}
+                                • {{ post.views }} views • {{ post.likes|length }} likes
+                            </p>
+                        </div>
+                        <div class="activity-actions">
+                            <a href="{{ url_for('edit_post', slug=post.slug) }}" class="btn btn-sm btn-outline">
+                                Edit
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Avatar preview
+const avatarInput = document.getElementById('profile_image');
+const avatarPreview = document.getElementById('avatar-preview');
+
+if (avatarInput) {
+    avatarInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                avatarPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// Character counter for bio
+const bioTextarea = document.getElementById('bio');
+if (bioTextarea) {
+    const counter = document.createElement('div');
+    counter.className = 'char-counter';
+    counter.textContent = `${bioTextarea.value.length}/500`;
+    bioTextarea.parentNode.appendChild(counter);
+    
+    bioTextarea.addEventListener('input', function() {
+        counter.textContent = `${this.value.length}/500`;
+        if (this.value.length > 500) {
+            counter.style.color = 'var(--danger)';
+        } else {
+            counter.style.color = 'var(--gray)';
+        }
+    });
+}
+
+// Password strength meter
+const passwordInput = document.getElementById('password');
+if (passwordInput) {
+    const strengthMeter = document.createElement('div');
+    strengthMeter.className = 'password-strength';
+    strengthMeter.innerHTML = `
+        <div class="strength-bar">
+            <div class="strength-fill"></div>
+        </div>
+        <div class="strength-text">Password strength: Weak</div>
+    `;
+    passwordInput.parentNode.appendChild(strengthMeter);
+    
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        let strength = 0;
+        
+        // Check password strength
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        
+        const fill = strengthMeter.querySelector('.strength-fill');
+        const text = strengthMeter.querySelector('.strength-text');
+        
+        let width = (strength / 5) * 100;
+        let color = '#dc3545';
+        let message = 'Weak';
+        
+        if (strength >= 4) {
+            color = '#28a745';
+            message = 'Strong';
+        } else if (strength >= 3) {
+            color = '#ffc107';
+            message = 'Medium';
+        }
+        
+        fill.style.width = `${width}%`;
+        fill.style.backgroundColor = color;
+        text.textContent = `Password strength: ${message}`;
+        text.style.color = color;
+    });
+}
+
+// Form validation
+const form = document.querySelector('form');
+form.addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (password && password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+    }
+    
+    const bio = document.getElementById('bio').value;
+    if (bio.length > 500) {
+        e.preventDefault();
+        alert('Bio cannot exceed 500 characters!');
+        return false;
+    }
+    
+    return true;
+});
+
+// Delete account confirmation
+document.querySelector('.delete-account')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    if (confirm('Are you sure you want to delete your account? This action cannot be undone and will delete all your posts and data.')) {
+        const modal = document.createElement('div');
+        modal.className = 'confirmation-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>Confirm Account Deletion</h3>
+                <p>To confirm, please type your password:</p>
+                <input type="password" id="confirm-password" class="form-control" placeholder="Enter your password">
+                <div class="modal-actions">
+                    <button class="btn btn-outline cancel-delete">Cancel</button>
+                    <button class="btn btn-danger confirm-delete">Delete Account</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        modal.querySelector('.cancel-delete').addEventListener('click', () => modal.remove());
+        modal.querySelector('.confirm-delete').addEventListener('click', () => {
+            const password = modal.querySelector('#confirm-password').value;
+            if (password) {
+                // Submit delete request
+                fetch('/delete-account', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ password: password })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/';
+                    } else {
+                        alert(data.message || 'Failed to delete account');
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred. Please try again.');
+                });
+            } else {
+                alert('Please enter your password.');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

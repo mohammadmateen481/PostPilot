@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied - BlogSpace{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="error-container">
+        <div class="error-content">
+            <h1>403</h1>
+            <h2>Access Denied</h2>
+            <p>You don't have permission to access this page.</p>
+            
+            {% if not current_user.is_authenticated %}
+            <p>Please log in to continue.</p>
+            <div class="error-actions">
+                <a href="{{ url_for('login') }}" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Log In
+                </a>
+                <a href="{{ url_for('register') }}" class="btn btn-outline">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+            </div>
+            {% else %}
+            <p>You need admin privileges to access this page.</p>
+            <div class="error-actions">
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Go Home
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="error-image">
+            <img src="{{ url_for('static', filename='images/403.svg') }}" alt="403 Error">
+        </div>
+    </div>
+</div>
+{% endblock %}
